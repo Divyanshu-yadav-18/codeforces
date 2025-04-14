@@ -71,6 +71,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (user.titlePhoto != null)
+              Center(
+                child: CircleAvatar(
+                  radius: 70,
+                  backgroundImage: NetworkImage(user.titlePhoto!),
+                ),
+              ),
+            const SizedBox(height: 16),
             Text(
               'Handle: ${user.handle}',
               style: const TextStyle(fontSize: 18),
