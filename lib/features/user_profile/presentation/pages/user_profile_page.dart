@@ -1,3 +1,4 @@
+import 'package:codeforces_info/core/utils/rank_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/user_bloc.dart';
@@ -64,49 +65,70 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _buildUserInfo(UserModel user) {
-    return Card(
-      margin: const EdgeInsets.only(top: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (user.titlePhoto != null)
-              Center(
-                child: CircleAvatar(
-                  radius: 70,
+    return Center(
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (user.titlePhoto != null)
+                CircleAvatar(
+                  radius: 50,
                   backgroundImage: NetworkImage(user.titlePhoto!),
                 ),
-              ),
-            const SizedBox(height: 16),
-            Text(
-              'Handle: ${user.handle}',
-              style: const TextStyle(fontSize: 18),
-            ),
-            if (user.rank != null)
-              Text('Rank: ${user.rank}', style: const TextStyle(fontSize: 16)),
-            if (user.rating != null)
+              const SizedBox(height: 16),
               Text(
-                'Rating: ${user.rating}',
-                style: const TextStyle(fontSize: 16),
+                user.handle ?? 'Unknown',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            if (user.maxRank != null)
-              Text(
-                'Max Rank: ${user.maxRank}',
-                style: const TextStyle(fontSize: 16),
+              if (user.rank != null)
+                Text(
+                  user.rank!,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: getRankColor(user.rank),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              _buildInfoRow(Icons.star, 'Rating', user.rating?.toString()),
+              _buildInfoRow(
+                Icons.trending_up,
+                'Max Rating',
+                user.maxRating?.toString(),
               ),
-            if (user.maxRating != null)
-              Text(
-                'Max Rating: ${user.maxRating}',
-                style: const TextStyle(fontSize: 16),
+              _buildInfoRow(Icons.emoji_events, 'Max Rank', user.maxRank),
+              _buildInfoRow(Icons.business, 'Organization', user.organization),
+              _buildInfoRow(Icons.location_on, 'Country', user.country),
+              _buildInfoRow(
+                Icons.group,
+                'Friends of',
+                user.friendOfCount?.toString(),
               ),
-            if (user.organization != null)
-              Text(
-                'Organization: ${user.organization}',
-                style: const TextStyle(fontSize: 16),
-              ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String? value) {
+    if (value == null || value.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.blueAccent),
+          const SizedBox(width: 8),
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w600)),
+          Expanded(child: Text(value, style: const TextStyle(fontSize: 14))),
+        ],
       ),
     );
   }
